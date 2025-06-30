@@ -12,3 +12,10 @@ uvicorn
 flake8
 pytest
 mlflow
+
+fastapi
+uvicorn
+mlflow
+pydantic
+pandas
+
