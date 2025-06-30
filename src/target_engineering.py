@@ -4,30 +4,41 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from datetime import datetime
 
-def compute_rfm(df: pd.DataFrame, snapshot_date: str = "2021-12-31") -> pd.DataFrame:
-    snapshot = pd.to_datetime(snapshot_date)
-    df["TransactionStartTime"] = pd.to_datetime(df["TransactionStartTime"])
+def compute_rfm(df):
+    df["TransactionStartTime"] = pd.to_datetime(df["TransactionStartTime"], utc=True)
+
+    snapshot = df["TransactionStartTime"].max()
 
     rfm = df.groupby("CustomerId").agg({
         "TransactionStartTime": lambda x: (snapshot - x.max()).days,
         "TransactionId": "count",
         "Amount": "sum"
-    }).reset_index()
+    }).rename(columns={
+        "TransactionStartTime": "Recency",
+        "TransactionId": "Frequency",
+        "Amount": "Monetary"
+    })
 
-    rfm.columns = ["CustomerId", "Recency", "Frequency", "Monetary"]
     return rfm
 
-def cluster_rfm(rfm: pd.DataFrame, n_clusters: int = 3, random_state: int = 42) -> pd.DataFrame:
+def cluster_rfm(rfm):
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.cluster import KMeans
+
+    features = rfm[["Recency", "Frequency", "Monetary"]]
     scaler = StandardScaler()
-    rfm_scaled = scaler.fit_transform(rfm[["Recency", "Frequency", "Monetary"]])
+    scaled = scaler.fit_transform(features)
 
-    kmeans = KMeans(n_clusters=n_clusters, random_state=random_state)
-    rfm["Cluster"] = kmeans.fit_predict(rfm_scaled)
+    kmeans = KMeans(n_clusters=3, random_state=42)
+    rfm["cluster"] = kmeans.fit_predict(scaled)
+
+    rfm = rfm.reset_index()  # ✅ This brings back 'CustomerId' as a column
 
     return rfm
+
 
 def label_high_risk_cluster(rfm_clustered: pd.DataFrame) -> pd.DataFrame:
-    cluster_stats = rfm_clustered.groupby("Cluster").agg({
+    cluster_stats = rfm_clustered.groupby("cluster").agg({
         "Recency": "mean",
         "Frequency": "mean",
         "Monetary": "mean"
@@ -39,6 +50,6 @@ def label_high_risk_cluster(rfm_clustered: pd.DataFrame) -> pd.DataFrame:
         ascending=[True, True, False]
     ).index[0]
 
-    rfm_clustered["is_high_risk"] = (rfm_clustered["Cluster"] == high_risk_cluster).astype(int)
+    rfm_clustered["is_high_risk"] = (rfm_clustered["cluster"] == high_risk_cluster).astype(int)
     return rfm_clustered[["CustomerId", "is_high_risk"]]
 

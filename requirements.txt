@@ -1,4 +1,4 @@
- pandas
+pandas
 numpy
 scikit-learn
 matplotlib
@@ -11,3 +11,4 @@ fastapi
 uvicorn
 flake8
 pytest
+mlflow
