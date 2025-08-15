@@ -1,0 +1,10 @@
+artifact_location: file:///C:/Users/Admin/Desktop/KAIM/Week%205/credit-risk-model/mlruns/567193713462110902/models/m-0a8c9ff62a95406098d4574785c5f8b6/artifacts
+creation_timestamp: 1751299389584
+experiment_id: '567193713462110902'
+last_updated_timestamp: 1751299394763
+model_id: m-0a8c9ff62a95406098d4574785c5f8b6
+model_type: null
+name: model
+source_run_id: 39b7e46484574559bf09abbe017087a0
+status: 2
+status_message: null
