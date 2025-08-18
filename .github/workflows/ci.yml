@@ -1,33 +1,24 @@
-name: CI Pipeline
+name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, task-*]
+  pull_request:
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
-
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: 3.11
-
-    - name: Install Dependencies
+        python-version: "3.11"
+    - name: Install deps
       run: |
-        pip install --upgrade pip
+        python -m pip install --upgrade pip
         pip install -r requirements.txt
-
-    - name: Lint with flake8
-      run: |
-        pip install flake8
-        flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics
-
-    - name: Run Tests
-      run: |
-        pip install pytest
-        pytest tests/
+        pip install pytest pre-commit
+    - name: Lint & format (pre-commit)
+      run: pre-commit run --all-files
+    - name: Tests
+      run: pytest -q

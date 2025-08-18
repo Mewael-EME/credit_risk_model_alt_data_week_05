@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/Users/Admin/Desktop/KAIM/Week%205/credit-risk-model/mlruns/567193713462110902/39b7e46484574559bf09abbe017087a0/artifacts
+end_time: 1751299394797
+entry_point_name: ''
+experiment_id: '567193713462110902'
+lifecycle_stage: active
+run_id: 39b7e46484574559bf09abbe017087a0
+run_name: RandomForest
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751299377286
+status: 3
+tags: []
+user_id: Admin

@@ -1,3 +1,29 @@
-data/ 
-.ipynb_checkpoints/ 
+# Ignore raw and processed data
+data/
+ /data/
+
+# Ignore trained models
+models/
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.onnx
+
+# Ignore vector store indexes
+/vector_store/
+
+# Ignore Python cache and environment
 __pycache__/
+*.pyc
+.env
+.venv/
+*.env
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore OS or IDE-specific files
+.DS_Store
+*.log
+.vscode/
